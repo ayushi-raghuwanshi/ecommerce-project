@@ -43,7 +43,7 @@
     <link rel="stylesheet" href="{{asset('admin/assets/vendor/libs/apex-charts/apex-charts.css')}}" />
 
     <!-- Page CSS -->
-
+    @yield('custom-css')
     <!-- Helpers -->
     <script src="{{asset('admin/assets/vendor/js/helpers.js')}}"></script>
 
@@ -92,6 +92,9 @@
     <script src="{{asset('admin/assets/vendor/libs/popper/popper.js')}}"></script>
     <script src="{{asset('admin/assets/vendor/js/bootstrap.js')}}"></script>
     <script src="{{asset('admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js')}}"></script>
+    <!-- jquery validation -->
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
 
     <script src="{{asset('admin/assets/vendor/js/menu.js')}}"></script>
     <!-- endbuild -->
@@ -104,9 +107,9 @@
 
     <!-- Page JS -->
     <script src="{{asset('admin/assets/js/dashboards-analytics.js')}}"></script>
-
+    @yield('customscripts')
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js')}}"></script>
-    @yield('customscripts')
+  
   </body>
 </html>
