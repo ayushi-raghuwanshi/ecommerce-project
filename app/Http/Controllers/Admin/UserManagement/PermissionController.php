@@ -37,16 +37,16 @@ class PermissionController extends Controller
             'status' => 'required',
         ]);
         $slug = Str::slug($request->name);
-        if(!empty($request->get('id'))){
+        if($request->has('id')){
             $permission = Permission::find($request->get('id'));
             $msg = "Updated";
         }else{
             $permission = new Permission;
             $msg = "Created";
         }
-        $permission->name = $request->get('name');
+        $permission->name = $request->name;
         $permission->slug = $slug;
-        $permission->status = $request->get('status');
+        $permission->status = $request->status;
         $permission->save();
         
         return redirect()->route('getPermissionList')->with('success','Permission has been '.$msg.' successfully.');
@@ -57,7 +57,7 @@ class PermissionController extends Controller
     */
     public function editPermission($id)
     {
-        $permission = Permission::find($id);
+        $permission = Permission::findorFail($id);
         return view('admin.user-management.add_permission')->with('permission',$permission);
     }
 
@@ -66,7 +66,7 @@ class PermissionController extends Controller
     */
     public function deletePermission($id)
     {
-        $permission = Permission::find($id);
+        $permission = Permission::findorFail($id);
         $permission->deleted_at = date('Y-m-d H:i:s');
         $permission->save();
         return redirect()->route('getPermissionList')->with('success','Permission has been Deleted successfully.');

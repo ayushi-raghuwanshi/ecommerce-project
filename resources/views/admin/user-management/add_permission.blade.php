@@ -59,9 +59,9 @@ label.error {
 @endsection
 @section('customscripts')
 <script>
-  $(function(e) {
-    e.preventDefault();
+  $(function() {
     $("#permission-form").validate({
+      errorElement:'div',
       rules: {
         name: "required",
         status: "required",
