@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserManagement\Permissioncontroller;
+use App\Http\Controllers\Admin\UserManagement\RoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +21,8 @@ Route::get('/', function () {
 });
 
 
-Route::prefix('admin')->group(function () {
+Route::prefix('admin')->name('admin.')->group(function () {
+
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
@@ -29,15 +31,26 @@ Route::prefix('admin')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-        // permission routes
-        Route::controller(PermissionController::class)->group(function () {
-            Route::get('/getPermissionList', 'getPermissionList')->name('getPermissionList');
-            Route::get('/addPermission', 'addPermission')->name('add-permission');
-            Route::post('/storePermission', 'storePermission')->name('store-permission');
-            Route::get('/editPermission/{id}', 'editPermission')->name('edit-permission');
-            Route::get('/deletePermission/{id}', 'deletePermission')->name('delete-permission');
+        // user management routes
+        Route::prefix('user-management')->group(function () {
+            // permission group
+            Route::prefix('permission')->name('permission.')->controller(PermissionController::class)->group(function () {
+                Route::get('/', 'getLists')->name('list');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::get('/delete/{id}', 'destroy')->name('destroy');
+            });
+            // role group
+            Route::prefix('role')->name('role.')->controller(RoleController::class)->group(function () {
+                Route::get('/', 'lists')->name('list');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::get('/delete/{id}', 'destroy')->name('destroy');
+            });
         });
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
