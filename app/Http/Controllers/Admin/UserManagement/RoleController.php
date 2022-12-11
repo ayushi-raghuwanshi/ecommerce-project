@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\UserManagement;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -12,7 +13,7 @@ class RoleController extends Controller
 
     public function lists(Request $request)
     {
-        $roles = Role::latest()->paginate(2);
+        $roles = Role::withCount('users')->with(['permissions'])->latest()->paginate();
         return view('admin.user-management.role.list', compact('roles'));
     }
 
@@ -22,7 +23,8 @@ class RoleController extends Controller
     */
     public function create()
     {
-        return view('admin.user-management.role.create');
+        $permissions = Permission::where('status', 'Active')->get();
+        return view('admin.user-management.role.create', compact('permissions'));
     }
 
     /* @author: Ayushi Raghuwanshi
@@ -46,6 +48,7 @@ class RoleController extends Controller
         $role->slug   = Str::slug($request->name);
         $role->status = $request->status;
         $role->save();
+        $role->permissions()->sync($request->permissions);
 
         return redirect()->route('admin.role.list')->with('success', 'Roles has been ' . $msg . ' successfully.');
     }
@@ -55,8 +58,9 @@ class RoleController extends Controller
     */
     public function edit($id)
     {
-        $role = Role::findorFail($id);
-        return view('admin.user-management.role.create', compact('role'));
+        $role = Role::with('permissions')->findorFail($id);
+        $permissions = Permission::where('status', 'Active')->get();
+        return view('admin.user-management.role.create', compact('role', 'permissions'));
     }
 
     /* @author: Ayushi Raghuwanshi
@@ -67,6 +71,14 @@ class RoleController extends Controller
         $role = Role::findorFail($id);
         $role->deleted_at = date('Y-m-d H:i:s');
         $role->save();
+        return redirect()->route('admin.role.list')->with('success', 'Data has been Deleted successfully.');
+    }
+
+    public function permanenetDestroy($id)
+    {
+        $role = Role::findorFail($id);
+        $role->permissions()->detach();
+        $role->delete();
         return redirect()->route('admin.role.list')->with('success', 'Data has been Deleted successfully.');
     }
 }

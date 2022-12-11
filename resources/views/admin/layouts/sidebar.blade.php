@@ -40,8 +40,8 @@
                         <div data-i18n="Without navbar">Roles</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="layouts-container.html" class="menu-link">
+                <li class="menu-item {{ request()->route()->getName() == 'admin.user.list'? 'active': '' }}">
+                    <a href="{{ route('admin.user.list') }}" class="menu-link">
                         <div data-i18n="Container">Users</div>
                     </a>
                 </li>

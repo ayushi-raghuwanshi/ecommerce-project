@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserManagement\Permissioncontroller;
 use App\Http\Controllers\Admin\UserManagement\RoleController;
+use App\Http\Controllers\Admin\UserManagement\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
 
 Route::prefix('admin')->name('admin.')->group(function () {
 
@@ -44,6 +44,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
             // role group
             Route::prefix('role')->name('role.')->controller(RoleController::class)->group(function () {
                 Route::get('/', 'lists')->name('list');
+                Route::get('/create', 'create')->name('create');
+                Route::post('/store', 'store')->name('store');
+                Route::get('/edit/{id}', 'edit')->name('edit');
+                Route::get('/delete/{id}', 'destroy')->name('destroy');
+            });
+             // user group
+             Route::prefix('user')->name('user.')->controller(UserController::class)->group(function () {
+                Route::get('/', 'index')->name('list');
                 Route::get('/create', 'create')->name('create');
                 Route::post('/store', 'store')->name('store');
                 Route::get('/edit/{id}', 'edit')->name('edit');

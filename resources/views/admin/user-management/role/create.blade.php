@@ -14,8 +14,7 @@
                 <div class="col-xl">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <form id="role-form" role="form" action="{{ route('admin.role.store') }}"
-                                method="post">
+                            <form id="role-form" role="form" action="{{ route('admin.role.store') }}" method="post">
                                 @csrf
                                 <div class="mb-3">
                                     <label class="form-label" for="name">Name</label>
@@ -23,9 +22,9 @@
                                         class="form-control @error('name') is-invalid @enderror" id="name"
                                         placeholder="Enter Permission" required=""
                                         value="{{ old('name', @$role?->name ?? '') }}" autocomplete="off">
-                                    @if ($errors->has('name'))
+                                    @error('name')
                                         <div class="invalid-feedback">{{ $errors->first('name') }}</div>
-                                    @endif
+                                    @enderror
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label" for="status">Status</label>
@@ -39,8 +38,53 @@
                                         <div class="invalid-feedback">{{ $errors->first('status') }}</div>
                                     @endif
                                 </div>
-                                <input type="hidden" name="id" value="{{ @$role?->id ?? '' }}">
-                                <input type="submit" class="btn btn-primary" id="submit" value="Submit">
+                                <div class="mb-3">
+                                    <h4>Permissions</h4>
+                                    <!-- Permission table -->
+                                    <div class="table-responsive">
+                                        <table class="table table-flush-spacing">
+                                            <thead>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" id="selectAll" @if(isset($role)) @checked($role?->permissions->count() == $permissions->count()) @endif>
+                                                            <label class="form-check-label" for="selectAll">
+                                                                Select All
+                                                            </label>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="d-flex justify-content-start align-items-center flex-wrap">
+                                                    @foreach ($permissions ?? [] as $permission)
+                                                        <td width="25%" style="padding-left:0">
+                                                            <div class="d-flex">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="checkbox"
+                                                                        name="permissions[]"
+                                                                        id="permission_{{ $permission->id }}"
+                                                                        value="{{ $permission->id }}"
+                                                                        @if(isset($role))  @checked($role?->permissions->contains($permission->id)) @endif>
+                                                                    <label class="form-check-label"
+                                                                        for="permission_{{ $permission->id }}">
+                                                                        {{ $permission->name }}
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    @endforeach
+
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Permission table -->
+                                </div>
+                                <div class="mb-3">
+                                    <input type="hidden" name="id" value="{{ @$role?->id ?? '' }}">
+                                    <input type="submit" class="btn btn-primary" id="submit" value="Submit">
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -75,6 +119,17 @@
                     form.submit();
                 }
             });
+        });
+        document.addEventListener("DOMContentLoaded", function(e) {
+            {
+                const t = document.querySelector("#selectAll"),
+                    o = document.querySelectorAll('[type="checkbox"]');
+                t.addEventListener("change", t => {
+                    o.forEach(e => {
+                        e.checked = t.target.checked
+                    })
+                })
+            }
         });
     </script>
 @endsection

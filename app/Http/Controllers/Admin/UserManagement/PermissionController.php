@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\UserManagement;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -49,7 +50,8 @@ class PermissionController extends Controller
         $permission->status = $request->status;
         $permission->save();
 
-        return redirect()->route('admin.permission.list')->with('success', 'Permission has been ' . $msg . ' successfully.');
+        return redirect()->route('admin.permission.list')
+        ->with('success', 'Permission has been ' . $msg . ' successfully.');
     }
 
     /* @author: Ayushi Raghuwanshi
